@@ -1,1 +1,26 @@
-tt
+# python2
+from pwn import *
+import re
+s = remote("2019shell1.picoctf.com", 29594)
+res = s.recv(1024)
+res = re.findall(r'[0-1]+',res)
+solve = []
+for i in res:
+    solve.append(chr(int(i,2)))
+
+s.sendline("".join(solve))
+res = s.recv(1024)
+res = re.findall(r'[0-9]+',res)
+solve = []
+for i in res:
+    solve.append(chr(int(i,8)))
+s.sendline("".join(solve))
+res = s.recv(1024)
+res = re.findall(r'the+[ a-z0-9 ]+as',res)[0][4:-2]
+solve = []
+for i in range(0,len(res)-1,2):
+    solve.append(chr(int(res[i:i+2],16)))
+s.sendline("".join(solve))
+
+res = s.recv(1024)
+print res
